@@ -427,8 +427,9 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px s
 .meals-gradient { height: 414px; background: linear-gradient(#ffdc4c 0, #ffe580 49%, #fefcf6 100%); }
 .meals-gradient .simple-brand-header { padding-top: 48px; height: 105px; }
 .meals-gradient .simple-brand-header > button img { width: 30px; height: 30px; }
-.meals-date-strip { height: 75px; display: flex; justify-content: space-around; padding: 0 20px; }
-.meals-date-strip button { width: 52px; border: 0; border-radius: 17px; background: none; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.meals-date-strip { height: 75px; display: flex; gap: 5px; overflow-x: auto; padding: 0 20px; scrollbar-width: none; }
+.meals-date-strip::-webkit-scrollbar, .week-strip::-webkit-scrollbar { display: none; }
+.meals-date-strip button { flex: 0 0 52px; width: 52px; border: 0; border-radius: 17px; background: none; display: flex; flex-direction: column; align-items: center; justify-content: center; }
 .meals-date-strip b { font-size: 18px; }.meals-date-strip span { margin-top: 3px; font-size: 10px; }.meals-date-strip button.selected { background: white; box-shadow: 0 4px 13px rgb(0 0 0 / .08); }
 .meals-overview { height: 225px; display: grid; grid-template-columns: 172px 1fr; gap: 18px; padding: 24px 14px 0; }
 .overview-cards { display: grid; gap: 10px; }
@@ -451,8 +452,8 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px s
 .meal-summary > strong { position: absolute; right: 20px; top: 32px; font-size: 24px; }
 .meal-summary > span { display: block; height: 5px; margin-top: 15px; overflow: hidden; border-radius: 3px; background: #57534d; }
 .meal-summary > span i { display: block; height: 100%; background: var(--brand); }
-.week-strip { height: 78px; margin-top: 16px; padding: 0 20px; display: flex; justify-content: space-between; }
-.week-strip button { width: 52px; border: 0; border-radius: 18px; background: none; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #574f40; font-size: 11px; }
+.week-strip { height: 78px; margin-top: 16px; padding: 0 20px; display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; }
+.week-strip button { flex: 0 0 52px; width: 52px; border: 0; border-radius: 18px; background: none; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #574f40; font-size: 11px; }
 .week-strip button span:last-child { margin-top: 3px; font-size: 14px; font-weight: 700; }
 .week-strip button.selected { background: #ffe29a; color: var(--ink); }
 .daily-plan { padding: 17px 20px 8px; background: white; }
@@ -786,6 +787,20 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px s
 .schedule-screen > section > h2 { margin: 0; font-size: 21px; line-height: 1.4; }
 .schedule-screen > section > p { margin: 7px 0 22px; color: #81786b; font-size: 10px; }
 .schedule-screen > section > div { border: 1px solid #e8decc; border-radius: 17px; overflow: hidden; background: white; }
+
+.plan-meal-swap { width: 100%; min-height: 34px; padding: 5px 0; border: 0; background: transparent; display: flex; align-items: center; justify-content: space-between; text-align: left; }
+.budget-remain.over { border-color: #efb0aa; background: #fff0ee; color: #a52d24; }
+.meals-empty, .leftover-empty, .chat-empty { min-height: 420px; padding: 80px 30px 120px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; text-align: center; }
+.meals-empty img { width: 142px; height: 142px; object-fit: contain; }
+.meals-empty h1, .leftover-empty h2, .chat-empty h2 { margin: 0; font-size: 21px; }
+.meals-empty p, .leftover-empty p { margin: 0 0 12px; color: var(--muted); font-size: 12px; line-height: 1.6; }
+.leftover-empty svg { width: 42px; height: 42px; color: #b28b14; }
+.daily-empty { padding: 28px 0; color: var(--muted); text-align: center; font-size: 12px; }
+.share-empty { min-height: 180px; padding: 30px 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: var(--muted); text-align: center; }
+.share-empty svg { width: 34px; height: 34px; color: #b28b14; }
+.share-empty b { color: var(--ink); font-size: 14px; }
+.share-empty span { font-size: 11px; line-height: 1.55; }
+.meal-mini:disabled { opacity: 1; }
 .schedule-screen > section > div > button { width: 100%; min-height: 66px; padding: 0 14px; border: 0; border-bottom: 1px solid #eee6d8; background: white; display: flex; align-items: center; justify-content: space-between; text-align: left; }
 .schedule-screen > section > div > button:last-child { border-bottom: 0; }.schedule-screen > section > div > button.selected { background: #fff8dc; }
 .schedule-screen > section > div span { display: grid; gap: 4px; }.schedule-screen > section > div b { font-size: 12px; }.schedule-screen > section > div small { color: #81786b; font-size: 9px; }
