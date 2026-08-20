@@ -287,7 +287,10 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px s
 .day-meal-list button.selected { border-color: #e2b400; background: var(--pale); color: var(--ink); font-weight: 700; }
 .budget-step > img { width: 130px; height: 130px; }
 .budget-input { height: 85px; margin-top: 31px; padding: 0 24px; border: 1px solid #efe7d7; border-radius: 22px; background: white; display: flex; align-items: center; justify-content: space-between; color: #a97e00; }
-.budget-input strong { color: var(--ink); font-size: 29px; }
+.budget-input:focus-within { border-color: #d5aa00; box-shadow: 0 0 0 3px rgb(255 201 20 / .2); }
+.budget-input input { min-width: 0; width: 100%; padding: 0; border: 0; outline: 0; background: transparent; color: var(--ink); caret-color: #a97e00; font-size: 29px; font-weight: 700; }
+.budget-input input::placeholder { color: #b6afa3; }
+.budget-input span { flex: 0 0 auto; margin-left: 12px; }
 .analyzing { padding-top: 54px; text-align: center; }
 .analyzing > img { width: 132px; height: 139px; object-fit: contain; }
 .loader { flex: 0 0 16px; width: 16px; height: 16px; border: 2px solid #f1ebdd; border-top-color: #b48700; border-radius: 50%; animation: spin .8s linear infinite; }
@@ -626,7 +629,7 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px s
 .meals-step { padding-top: 18px; }
 .meals-step .plan-mascot-small { width: 70px; height: 70px; }
 .day-meal-table { margin-top: 23px; padding: 12px 12px 9px; border: 1px solid #e8decc; border-radius: 18px; background: white; display: grid; grid-template-columns: 56px repeat(3, 1fr); align-items: center; gap: 0; }
-.day-meal-table > b { font-size: 11px; }
+.day-meal-table > b { white-space: nowrap; font-size: 11px; }
 .day-meal-table > span { text-align: center; color: #81786b; font-size: 9px; }
 .day-meal-row { grid-column: 1 / -1; min-height: 43px; border-top: 1px solid #f0eadf; display: grid; grid-template-columns: 56px repeat(3, 1fr); align-items: center; }
 .day-meal-row strong { font-size: 10px; }

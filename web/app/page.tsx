@@ -518,7 +518,7 @@ function PlanFlow({ initialStep, close, openAI, complete }: { initialStep: numbe
         {step === 1 && <PlanDuration duration={duration} setDuration={setDuration} />}
         {step === 2 && <PlanMeals duration={duration} selectedMeals={selectedMeals} toggleMeal={(key) => setSelectedMeals((old) => old.includes(key) ? old.filter((item) => item !== key) : [...old, key])} />}
         {step === 3 && <PlanBudget budget={budget} setBudget={setBudget} />}
-        {step === 4 && <PlanAnalyzing />}
+        {step === 4 && <PlanAnalyzing budget={budget} />}
         {step === 5 && <PlanOptions choice={choice} setChoice={setChoice} />}
         {step === 6 && <PlanEdit openAI={openAI} />}
         {step === 7 && <PlanFinal budget={budget} />}
@@ -528,7 +528,7 @@ function PlanFlow({ initialStep, close, openAI, complete }: { initialStep: numbe
         {step === 11 && <PlanUpgrade />}
         {step === 12 && <PlanShopping />}
       </div>
-      <div className="plan-footer">{step === 4 ? <PrimaryButton onClick={next}>식단안 보기</PrimaryButton> : <PrimaryButton dark={step !== 7} onClick={step === 12 ? complete : next}>{["", "다음", "다음", "다음", "식단안 보기", "이 식단 선택", "다음", "이 식단으로 확정", "다음", "다음", "다음", "다음", "확인"][step]}</PrimaryButton>}</div>
+      <div className="plan-footer">{step === 4 ? <PrimaryButton onClick={next}>식단안 보기</PrimaryButton> : <PrimaryButton dark={step !== 7} disabled={step === 3 && budget <= 0} onClick={step === 12 ? complete : next}>{["", "다음", "다음", "다음", "식단안 보기", "이 식단 선택", "다음", "이 식단으로 확정", "다음", "다음", "다음", "다음", "확인"][step]}</PrimaryButton>}</div>
     </main>
   );
 }
@@ -563,16 +563,20 @@ function PlanDuration({ duration, setDuration }: { duration: number; setDuration
 }
 
 function PlanMeals({ duration, selectedMeals, toggleMeal }: { duration: number; selectedMeals: string[]; toggleMeal: (key: string) => void }) {
-  const counts = ["아침", "점심", "저녁"].map((meal) => selectedMeals.filter((key) => key.endsWith(meal)).length);
-  return <section className="plan-form meals-step"><img className="plan-mascot-small" src={asset("PlanMascotMeals.webp")} alt="" /><small>STEP 2</small><h2>몇 끼 드실 거예요?</h2><p>일차마다 아침·점심·저녁을 선택해 주세요.</p><div className="day-meal-table"><b>일차별 끼니</b><span /><span>아침</span><span>점심</span><span>저녁</span>{Array.from({ length: duration }, (_, index) => <div className="day-meal-row" key={index}><strong>{index + 1}일차</strong>{["아침", "점심", "저녁"].map((meal) => { const key = `${index}-${meal}`; const selected = selectedMeals.includes(key); return <button className={selected ? "selected" : ""} aria-label={`${index + 1}일차 ${meal}`} aria-pressed={selected} onClick={() => toggleMeal(key)} key={meal}>{selected ? <Check size={14} /> : null}</button>; })}</div>)}</div><p className="meal-counts">아침 {counts[0]}회 · 점심 {counts[1]}회 · 저녁 {counts[2]}회로 선택했어요.</p></section>;
+  const counts = ["아침", "점심", "저녁"].map((meal) => selectedMeals.filter((key) => Number(key.split("-")[0]) < duration && key.endsWith(meal)).length);
+  return <section className="plan-form meals-step"><img className="plan-mascot-small" src={asset("PlanMascotMeals.webp")} alt="" /><small>STEP 2</small><h2>몇 끼 드실 거예요?</h2><p>일차마다 아침·점심·저녁을 선택해 주세요.</p><div className="day-meal-table"><b>일차별 끼니</b><span>아침</span><span>점심</span><span>저녁</span>{Array.from({ length: duration }, (_, index) => <div className="day-meal-row" key={index}><strong>{index + 1}일차</strong>{["아침", "점심", "저녁"].map((meal) => { const key = `${index}-${meal}`; const selected = selectedMeals.includes(key); return <button className={selected ? "selected" : ""} aria-label={`${index + 1}일차 ${meal}`} aria-pressed={selected} onClick={() => toggleMeal(key)} key={meal}>{selected ? <Check size={14} /> : null}</button>; })}</div>)}</div><p className="meal-counts">아침 {counts[0]}회 · 점심 {counts[1]}회 · 저녁 {counts[2]}회로 선택했어요.</p></section>;
 }
 
 function PlanBudget({ budget, setBudget }: { budget: number; setBudget: (value: number) => void }) {
-  return <section className="plan-intro budget-step"><img src={asset("PlanMascotBudget.webp")} alt="" /><small>STEP 3</small><h2>장보기를 알려주세요</h2><p>장보기 예산에 맞춰 식단을 구성해줄게요.</p><div className="budget-input"><strong>{budget.toLocaleString("ko-KR")}</strong><span>원</span></div><h3>빠른 선택</h3><div className="preset-row">{[30000, 40000, 50000].map((value) => <button className={budget === value ? "selected" : ""} onClick={() => setBudget(value)} key={value}>{value / 10000}만원</button>)}</div><div className="budget-note"><WalletCards /><b>실제 구매 비용은 더 낮아질 수 있어요</b><span>보유 재료를 확인한 뒤 남은 예산까지 계산해요.</span></div></section>;
+  const updateBudget = (rawValue: string) => {
+    const digits = rawValue.replace(/\D/g, "").slice(0, 7);
+    setBudget(digits ? Number(digits) : 0);
+  };
+  return <section className="plan-intro budget-step"><img src={asset("PlanMascotBudget.webp")} alt="" /><small>STEP 3</small><h2>장보기를 알려주세요</h2><p>장보기 예산에 맞춰 식단을 구성해줄게요.</p><label className="budget-input"><input aria-label="장보기 예산" inputMode="numeric" enterKeyHint="done" autoComplete="off" maxLength={9} value={budget ? budget.toLocaleString("ko-KR") : ""} placeholder="0" onChange={(event) => updateBudget(event.target.value)} onFocus={(event) => event.currentTarget.select()} /><span>원</span></label><h3>빠른 선택</h3><div className="preset-row">{[30000, 40000, 50000].map((value) => <button className={budget === value ? "selected" : ""} onClick={() => setBudget(value)} key={value}>{value / 10000}만원</button>)}</div><div className="budget-note"><WalletCards /><b>실제 구매 비용은 더 낮아질 수 있어요</b><span>보유 재료를 확인한 뒤 남은 예산까지 계산해요.</span></div></section>;
 }
 
-function PlanAnalyzing() {
-  return <section className="analyzing"><img src={asset("PlanMascotAnalyzing.webp")} alt="" /><h2>취향에 맞는 식단을<br />조합하고 있어요</h2><div className="analyzing-subtitle"><div className="loader" /><p>찜한 레시피와 선택한 조건을 함께 분석해요.</p></div><div className="analysis-card"><h3>이렇게 반영하고 있어요</h3><span><Heart size={19} />찜한 레시피와 취향<em>한식 · 밥 요리 선호</em></span><span><Sparkles size={19} />가벼운 아침 메뉴<em>부담 없는 메뉴 우선</em></span><span><WalletCards size={19} />3만원 예산<em>보유 재료 고려 예정</em></span></div></section>;
+function PlanAnalyzing({ budget }: { budget: number }) {
+  return <section className="analyzing"><img src={asset("PlanMascotAnalyzing.webp")} alt="" /><h2>취향에 맞는 식단을<br />조합하고 있어요</h2><div className="analyzing-subtitle"><div className="loader" /><p>찜한 레시피와 선택한 조건을 함께 분석해요.</p></div><div className="analysis-card"><h3>이렇게 반영하고 있어요</h3><span><Heart size={19} />찜한 레시피와 취향<em>한식 · 밥 요리 선호</em></span><span><Sparkles size={19} />가벼운 아침 메뉴<em>부담 없는 메뉴 우선</em></span><span><WalletCards size={19} />{won(budget)} 예산<em>보유 재료 고려 예정</em></span></div></section>;
 }
 
 function PlanOptions({ choice, setChoice }: { choice: number; setChoice: (value: number) => void }) {
