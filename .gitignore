@@ -13,6 +13,9 @@ tsconfig.tsbuildinfo
 web/.env.local
 web/.env.*.local
 
+# 모바일 웹 미러는 로컬에만 유지하고 GitHub에는 올리지 않는다.
+/web/
+
 # Xcode
 xcuserdata/
 *.xcuserstate
